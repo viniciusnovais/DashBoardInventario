@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DashBoard</string>
+    <string name="autorizacao">Autorização</string>
+    <string name="entrar">Entrar</string>
+    <string name="horario_inicio_enderecamento">Horário Início Endereçamento: </string>
+    <string name="horario_inicio_contagem">Horário Início Contagem: </string>
+    <string name="total_enderecos">Total de endereços: </string>
+    <string name="total_dias_estimado">Total dias estimado</string>
+    <string name="total_colaboradores">Total de colaboradores:</string>
+    <string name="resumo_inventario">Resumo Inventário</string>
+    <string name="carregando">Carregando...</string>
+    <string name="autenticando">Autenticando</string>
+</resources>
