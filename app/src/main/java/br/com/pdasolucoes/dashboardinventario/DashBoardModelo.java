@@ -6,7 +6,9 @@ package br.com.pdasolucoes.dashboardinventario;
 
 public class DashBoardModelo {
 
+    private int idInventario;
     private String nomeLoja;
+    private String nomeLider;
     private String nomeGerente;
     private String data;
     private long autorizao;
@@ -28,6 +30,9 @@ public class DashBoardModelo {
     private long qtdeSku;
     private long numeroPaginas;
     private int qtdeAlteracao;
+    private long totalEnderecoDpto;
+    private long contEnderecoDpto;
+    private int porcentEnderecoDpto;
 
     public String getNomeLoja() {
         return nomeLoja;
@@ -203,5 +208,45 @@ public class DashBoardModelo {
 
     public void setQtdeAlteracao(int qtdeAlteracao) {
         this.qtdeAlteracao = qtdeAlteracao;
+    }
+
+    public int getIdInventario() {
+        return idInventario;
+    }
+
+    public void setIdInventario(int idInventario) {
+        this.idInventario = idInventario;
+    }
+
+    public long getTotalEnderecoDpto() {
+        return totalEnderecoDpto;
+    }
+
+    public void setTotalEnderecoDpto(long totalEnderecoDpto) {
+        this.totalEnderecoDpto = totalEnderecoDpto;
+    }
+
+    public long getContEnderecoDpto() {
+        return contEnderecoDpto;
+    }
+
+    public void setContEnderecoDpto(long contEnderecoDpto) {
+        this.contEnderecoDpto = contEnderecoDpto;
+    }
+
+    public int getPorcentEnderecoDpto() {
+        return porcentEnderecoDpto;
+    }
+
+    public void setPorcentEnderecoDpto(int porcentEnderecoDpto) {
+        this.porcentEnderecoDpto = porcentEnderecoDpto;
+    }
+
+    public String getNomeLider() {
+        return nomeLider;
+    }
+
+    public void setNomeLider(String nomeLider) {
+        this.nomeLider = nomeLider;
     }
 }

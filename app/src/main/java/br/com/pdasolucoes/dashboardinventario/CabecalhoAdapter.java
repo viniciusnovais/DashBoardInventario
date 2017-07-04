@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -15,11 +16,12 @@ import java.util.List;
 public class CabecalhoAdapter extends RecyclerView.Adapter<CabecalhoAdapter.MyViewHolder> {
 
     private Context context;
-    private List<Integer> lista;
+    private String[] lista, referencia;
 
-    public CabecalhoAdapter(Context context, List<Integer> lista) {
+    public CabecalhoAdapter(Context context, String[] lista) {
         this.context = context;
         this.lista = lista;
+        referencia = context.getResources().getStringArray(R.array.cabecalho);
     }
 
     @Override
@@ -34,16 +36,26 @@ public class CabecalhoAdapter extends RecyclerView.Adapter<CabecalhoAdapter.MyVi
     @Override
     public void onBindViewHolder(CabecalhoAdapter.MyViewHolder holder, int position) {
 
+        if (lista[position] != null) {
+            tvDado.setText(lista[position]);
+        } else {
+            tvDado.setText("Indisponível");
+        }
+        tvReferenciaDado.setText(referencia[position]);
     }
 
     @Override
     public int getItemCount() {
-        return lista.size();
+        return lista.length;
     }
+
+    public TextView tvDado, tvReferenciaDado;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public MyViewHolder(View itemView) {
             super(itemView);
+            tvDado = (TextView) itemView.findViewById(R.id.tvDado);
+            tvReferenciaDado = (TextView) itemView.findViewById(R.id.tvReferenciaDado);
         }
     }
 }

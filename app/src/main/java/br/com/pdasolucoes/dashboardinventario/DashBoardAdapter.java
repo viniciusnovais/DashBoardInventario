@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -16,11 +17,12 @@ import java.util.List;
 public class DashBoardAdapter extends RecyclerView.Adapter<DashBoardAdapter.MyViewHolder> {
 
     private Context context;
-    private List<Integer> lista;
+    private String[] lista, referencia;
 
-    public DashBoardAdapter(Context context, List<Integer> lista) {
+    public DashBoardAdapter(Context context, String[] lista) {
         this.context = context;
         this.lista = lista;
+        referencia = context.getResources().getStringArray(R.array.dashboard);
     }
 
     @Override
@@ -35,16 +37,27 @@ public class DashBoardAdapter extends RecyclerView.Adapter<DashBoardAdapter.MyVi
     @Override
     public void onBindViewHolder(DashBoardAdapter.MyViewHolder holder, int position) {
 
+        if (lista != null) {
+            tvDado.setText(lista[position]);
+        } else {
+            tvDado.setText("Indisponível");
+        }
+
+        tvReferencia.setText(referencia[position]);
     }
 
     @Override
     public int getItemCount() {
-        return lista.size();
+        return lista.length;
     }
+
+    public TextView tvDado, tvReferencia;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public MyViewHolder(View itemView) {
             super(itemView);
+            tvDado = (TextView) itemView.findViewById(R.id.tvDado);
+            tvReferencia = (TextView) itemView.findViewById(R.id.tvReferenciaDado);
         }
     }
 }

@@ -10,4 +10,47 @@
     <string name="resumo_inventario">Resumo Inventário</string>
     <string name="carregando">Carregando...</string>
     <string name="autenticando">Autenticando</string>
+    <string name="piso_vendas">Piso Vendas</string>
+    <string name="deposito">Depósito</string>
+    <string name="lider">Líder</string>
+    <string name="gerente">Gerente</string>
+    <string name="data">Data</string>
+    <string name="inventario">Inventário</string>
+    <string name="operadores">Operadores</string>
+    <string name="bandeira">Bandeira</string>
+    <string name="filial">Filial</string>
+    <string name="previsao_pecas">Previsão Peças</string>
+    <string name="realizado_pecas">Realizado Peças</string>
+    <string name="previsao_enderecos">Previsão Endereços</string>
+    <string name="realizado_enderecos">Realizado Endereços</string>
+    <string name="inicio_auditoria">Horário início auditoria</string>
+    <string name="fim_auditoria">Horário fim auditoria</string>
+    <string name="inicio_divergencia">Horário início divergência</string>
+    <string name="fim_divergencia">Horário fim Divergência</string>
+    <string name="qtde_sku">Quantidade SKU</string>
+    <string name="numero_paginas">Número Páginas</string>
+    <string name="qtde_alteracao">Quantidade Alteração</string>
+
+    <string-array name="cabecalho">
+        <item>@string/lider</item>
+        <item>@string/data</item>
+        <item>@string/inventario</item>
+        <item>@string/operadores</item>
+        <item>@string/bandeira</item>
+        <item>@string/filial</item>
+    </string-array>
+
+    <string-array name="dashboard">
+        <item>@string/previsao_pecas</item>
+        <item>@string/realizado_pecas</item>
+        <item>@string/previsao_enderecos</item>
+        <item>@string/realizado_enderecos</item>
+        <item>@string/inicio_auditoria</item>
+        <item>@string/fim_auditoria</item>
+        <item>@string/inicio_divergencia</item>
+        <item>@string/fim_divergencia</item>
+        <item>@string/qtde_sku</item>
+        <item>@string/numero_paginas</item>
+        <item>@string/qtde_alteracao</item>
+    </string-array>
 </resources>
