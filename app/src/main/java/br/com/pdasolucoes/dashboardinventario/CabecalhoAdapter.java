@@ -30,6 +30,8 @@ public class CabecalhoAdapter extends RecyclerView.Adapter<CabecalhoAdapter.MyVi
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lista_cabecalho_item, parent, false);
         MyViewHolder mvh = new MyViewHolder(v);
 
+        mvh.setIsRecyclable(false);
+
         return mvh;
     }
 
@@ -47,6 +49,11 @@ public class CabecalhoAdapter extends RecyclerView.Adapter<CabecalhoAdapter.MyVi
     @Override
     public int getItemCount() {
         return lista.length;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     public TextView tvDado, tvReferenciaDado;

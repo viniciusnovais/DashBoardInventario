@@ -164,7 +164,7 @@ public class DashBoardActivity extends AppCompatActivity {
             super.onProgressUpdate(values);
 
             if (cnt == 0) {
-                tvPorcentagemDeposito.setText(values[0] + "/100");
+                tvPorcentagemDeposito.setText(values[0] + "%");
                 if (values[0] <= 30) {
                     progressBar.setProgressDrawable(ContextCompat.getDrawable(DashBoardActivity.this, R.drawable.setprogressdrawable_default));
                 } else if (values[0] <= 60) {
@@ -181,7 +181,7 @@ public class DashBoardActivity extends AppCompatActivity {
             } else {
                 int d = porcetagem - value;
                 int novo_value = value + d;
-                tvPorcentagemDeposito.setText(novo_value + "/100");
+                tvPorcentagemDeposito.setText(novo_value + "%");
 
                 if (novo_value <= 30) {
                     progressBar.setProgressDrawable(ContextCompat.getDrawable(DashBoardActivity.this, R.drawable.setprogressdrawable_default));
@@ -234,7 +234,7 @@ public class DashBoardActivity extends AppCompatActivity {
             super.onProgressUpdate(values);
 
             if (cnt2 == 0) {
-                tvPorcentagemVendas.setText(values[0] + "/100");
+                tvPorcentagemVendas.setText(values[0] + "%");
                 if (values[0] <= 30) {
                     progressBarVendas.setProgressDrawable(ContextCompat.getDrawable(DashBoardActivity.this, R.drawable.setprogressdrawable_default));
                 } else if (values[0] <= 60) {
@@ -251,7 +251,7 @@ public class DashBoardActivity extends AppCompatActivity {
             } else {
                 int d = porcetagem - value2;
                 int novo_value = value2 + d;
-                tvPorcentagemVendas.setText(novo_value + "/100");
+                tvPorcentagemVendas.setText(novo_value + "%");
                 if (novo_value <= 30) {
                     progressBarVendas.setProgressDrawable(ContextCompat.getDrawable(DashBoardActivity.this, R.drawable.setprogressdrawable_default));
                 } else if (novo_value <= 60) {
@@ -266,73 +266,78 @@ public class DashBoardActivity extends AppCompatActivity {
                 progressBarVendas.setProgress(novo_value);
             }
 
-            }
+        }
+    }
+
+    private void runMultipleAsyncTask() {
+
+
+        AsynDeposito asyncDeposito = new AsynDeposito();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            asyncDeposito.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        } else {
+            asyncDeposito.execute();
         }
 
-        private void runMultipleAsyncTask() {
+        AsyncVendas asyncVendas = new AsyncVendas();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            asyncVendas.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            asyncVendas.execute();
+        }
+
+    }
 
 
-            AsynDeposito asyncDeposito = new AsynDeposito();
+    public class AsyncDados extends AsyncTask<Object, Integer, List<DashBoardModelo>> {
+        SharedPreferences preferences;
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                asyncDeposito.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
 
-            } else {
-                asyncDeposito.execute();
+        @Override
+        protected List<DashBoardModelo> doInBackground(Object... params) {
+            preferences = getSharedPreferences("inventario", MODE_PRIVATE);
+            if (preferences.getInt("idInventario", 0) > 0) {
+                lista = Service.GetDashBoard(preferences.getInt("idInventario", 0));
             }
+            return lista;
+        }
 
-            AsyncVendas asyncVendas = new AsyncVendas();
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                asyncVendas.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } else {
-                asyncVendas.execute();
-            }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
 
         }
 
+        @Override
+        protected void onPostExecute(List<DashBoardModelo> dashBoardModelos) {
+            super.onPostExecute(dashBoardModelos);
 
-        public class AsyncDados extends AsyncTask<Object, Integer, List<DashBoardModelo>> {
-            SharedPreferences preferences;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                dialog.show();
-            }
-
-            @Override
-            protected List<DashBoardModelo> doInBackground(Object... params) {
-                preferences = getSharedPreferences("inventario", MODE_PRIVATE);
-                if (preferences.getInt("idInventario", 0) > 0) {
-                    lista = Service.GetDashBoard(preferences.getInt("idInventario", 0));
-                }
-
-                return lista;
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                super.onProgressUpdate(values);
-
-            }
-
-            @Override
-            protected void onPostExecute(List<DashBoardModelo> dashBoardModelos) {
-                super.onPostExecute(dashBoardModelos);
-
-                String[] arrayCabecalho = new String[6];
+            String[] arrayCabecalho = new String[6];
+            try {
                 arrayCabecalho[0] = dashBoardModelos.get(0).getNomeLider();
                 arrayCabecalho[1] = dashBoardModelos.get(0).getData();
                 arrayCabecalho[2] = preferences.getInt("idInventario", 0) + " - " + preferences.getString("autorizacao", "");
                 arrayCabecalho[3] = String.valueOf(dashBoardModelos.get(0).getTotalColaboradores());
                 arrayCabecalho[4] = dashBoardModelos.get(0).getBandeira();
                 arrayCabecalho[5] = dashBoardModelos.get(0).getNomeLoja();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
 
-                adapterCabecalho = new CabecalhoAdapter(DashBoardActivity.this, arrayCabecalho);
-                recyclerViewCabecalho.setAdapter(adapterCabecalho);
+            adapterCabecalho = new CabecalhoAdapter(DashBoardActivity.this, arrayCabecalho);
+            recyclerViewCabecalho.setAdapter(adapterCabecalho);
 
-                String[] arrayDashBoard = new String[11];
+            String[] arrayDashBoard = new String[11];
+
+            try {
                 arrayDashBoard[0] = String.valueOf(dashBoardModelos.get(0).getPrevisaoPecas());
                 arrayDashBoard[1] = String.valueOf(dashBoardModelos.get(0).getTotalPecasRealizado());
                 arrayDashBoard[2] = String.valueOf(dashBoardModelos.get(0).getPrevisaoEnderecos());
@@ -344,14 +349,17 @@ public class DashBoardActivity extends AppCompatActivity {
                 arrayDashBoard[8] = String.valueOf(dashBoardModelos.get(0).getQtdeSku());
                 arrayDashBoard[9] = String.valueOf(dashBoardModelos.get(0).getNumeroPaginas());
                 arrayDashBoard[10] = String.valueOf(dashBoardModelos.get(0).getQtdeAlteracao());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
 
 
-                adapter = new DashBoardAdapter(DashBoardActivity.this, arrayDashBoard);
-                recyclerView.setAdapter(adapter);
+            adapter = new DashBoardAdapter(DashBoardActivity.this, arrayDashBoard);
+            recyclerView.setAdapter(adapter);
 
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+            if (dialog.isShowing()) {
+                dialog.dismiss();
             }
         }
     }
+}

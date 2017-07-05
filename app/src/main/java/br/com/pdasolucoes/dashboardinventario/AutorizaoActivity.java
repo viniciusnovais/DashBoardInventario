@@ -78,25 +78,30 @@ public class AutorizaoActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
             idInventario = Service.GetInventario(textAutorizacao);
+
             return params;
         }
 
 
         @Override
         protected void onPostExecute(Object o) {
+            if (idInventario <= 0) {
+                dialog.dismiss();
+                Toast.makeText(AutorizaoActivity.this, "Autorização inválida", Toast.LENGTH_SHORT).show();
+            } else {
+                dialog.dismiss();
+                Intent i = new Intent(AutorizaoActivity.this, DashBoardActivity.class);
 
-            dialog.dismiss();
-            Intent i = new Intent(AutorizaoActivity.this, DashBoardActivity.class);
 
+                SharedPreferences preferences = getSharedPreferences("inventario", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("autorizacao", textAutorizacao);
+                editor.putInt("idInventario", idInventario);
+                editor.commit();
 
-            SharedPreferences preferences = getSharedPreferences("inventario", MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("autorizacao", textAutorizacao);
-            editor.putInt("idInventario", idInventario);
-            editor.commit();
-
-            startActivity(i);
-            finish();
+                startActivity(i);
+                finish();
+            }
 
             super.onPostExecute(o);
         }

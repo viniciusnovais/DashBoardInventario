@@ -31,6 +31,8 @@ public class DashBoardAdapter extends RecyclerView.Adapter<DashBoardAdapter.MyVi
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lista_dashboard_item, parent, false);
         MyViewHolder mvh = new MyViewHolder(v);
 
+        mvh.setIsRecyclable(false);
+
         return mvh;
     }
 
@@ -49,6 +51,11 @@ public class DashBoardAdapter extends RecyclerView.Adapter<DashBoardAdapter.MyVi
     @Override
     public int getItemCount() {
         return lista.length;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     public TextView tvDado, tvReferencia;
