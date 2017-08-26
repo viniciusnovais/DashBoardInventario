@@ -1,6 +1,7 @@
 package br.com.pdasolucoes.dashboardinventario.Services;
 
-import android.util.Log;
+
+import android.content.SharedPreferences;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.PropertyInfo;
@@ -11,6 +12,7 @@ import org.ksoap2.transport.HttpTransportSE;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.pdasolucoes.dashboardinventario.ConfiguracoesActivity;
 import br.com.pdasolucoes.dashboardinventario.DashBoardModelo;
 
 /**
@@ -19,10 +21,16 @@ import br.com.pdasolucoes.dashboardinventario.DashBoardModelo;
 
 public class Service {
 
+    public static String ERROR = "";
+    private static String servidor, diretorio;
 
-    public static int GetInventario(String autorizaocao) {
+    public static int GetInventario(String autorizaocao, SharedPreferences preferences) {
 
-        String URL = "http://179.184.159.52/invtablet/wsinventario.asmx";
+        servidor = preferences.getString("servidor", "");
+        diretorio = preferences.getString("diretorio", "");
+
+        //String URL = "http://179.184.159.52/invtablet/wsinventario.asmx";
+        String URL = "http://" + servidor + "/" + diretorio + "/wsinventario.asmx";
 
         String SOAP_ACTION = "http://tempuri.org/GetInventario";
 
@@ -65,6 +73,7 @@ public class Service {
 
         } catch (Exception e) {
             //Assign Error Status true in static variable 'errored'
+            ERROR = e.getMessage();
             e.printStackTrace();
         }
         //Return booleam to calling object
@@ -73,7 +82,8 @@ public class Service {
 
     public static List<DashBoardModelo> GetDashBoard(int idInventario) {
 
-        String URL = "http://179.184.159.52/invtablet/wsinventario.asmx";
+        //String URL = "http://179.184.159.52/invtablet/wsinventario.asmx";
+        String URL = "http://" + servidor + "/" + diretorio + "/wsinventario.asmx";
 
         String SOAP_ACTION = "http://tempuri.org/GetDashboard";
 
@@ -146,9 +156,23 @@ public class Service {
                         d.setHorarioFimAuditoria("Não ocorreu auditoria");
                     }
 
-                    d.setHorarioInicioDivergencia(array[j].getProperty("horarioInicioDivergencia").toString());
-                    d.setHorarioFimDivergencia(array[j].getProperty("horarioFimDivergencia").toString());
-                    d.setQtdeSku(Long.parseLong(array[j].getProperty("qtdeSku").toString()));
+                    if (!array[j].getProperty("horarioInicioDivergencia").toString().equals("anyType{}")) {
+                        d.setHorarioInicioDivergencia(array[j].getProperty("horarioInicioDivergencia").toString());
+                    } else {
+                        d.setHorarioInicioDivergencia("Não ocorreu divergência");
+                    }
+
+                    if (!array[j].getProperty("horarioFimDivergencia").toString().equals("anyType{}")) {
+                        d.setHorarioFimDivergencia(array[j].getProperty("horarioFimDivergencia").toString());
+                    } else {
+                        d.setHorarioFimDivergencia("Não ocorreu divergência");
+                    }
+
+                    if (Long.parseLong(array[j].getProperty("qtdeSku").toString()) < 0) {
+                        d.setQtdeSku(0);
+                    } else {
+                        d.setQtdeSku(Long.parseLong(array[j].getProperty("qtdeSku").toString()));
+                    }
                     d.setNumeroPaginas(Long.parseLong(array[j].getProperty("numeroPaginas").toString()));
                     d.setQtdeAlteracao(Integer.parseInt(array[j].getProperty("qtdeAlteracao").toString()));
                     d.setTotalEnderecoDpto(Long.parseLong(array[j].getProperty("totalEnderecoDpto").toString()));
@@ -162,6 +186,7 @@ public class Service {
 
         } catch (Exception e) {
             //Assign Error Status true in static variable 'errored'
+            ERROR = e.getMessage();
             e.printStackTrace();
         }
         //Return booleam to calling object

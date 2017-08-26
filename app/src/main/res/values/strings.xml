@@ -30,6 +30,10 @@
     <string name="qtde_sku">Quantidade SKU</string>
     <string name="numero_paginas">Número Páginas</string>
     <string name="qtde_alteracao">Quantidade Alteração</string>
+    <string name="servidor">Servidor</string>
+    <string name="diretorio">Diretório Virtual</string>
+    <string name="salvar">Salvar</string>
+    <string name="configuracoes">Configurações</string>
 
     <string-array name="cabecalho">
         <item>@string/lider</item>

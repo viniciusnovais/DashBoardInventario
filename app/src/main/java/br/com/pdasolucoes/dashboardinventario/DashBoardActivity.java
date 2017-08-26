@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
@@ -100,9 +101,9 @@ public class DashBoardActivity extends AppCompatActivity {
                 runMultipleAsyncTask();
                 cnt = 1;
                 cnt2 = 1;
-                handler.postDelayed(this, 20000);
+                handler.postDelayed(this, 300000);
             }
-        }, 20000);
+        }, 300000);
     }
 
     @Override
@@ -213,16 +214,23 @@ public class DashBoardActivity extends AppCompatActivity {
             preferences = getSharedPreferences("inventario", MODE_PRIVATE);
             if (preferences.getInt("idInventario", 0) > 0) {
                 lista = Service.GetDashBoard(preferences.getInt("idInventario", 0));
+                try {
+                    porcetagem = lista.get(0).getPorcentEnderecoDpto();
+                    for (int i = 0; i <= porcetagem; i++) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-                porcetagem = lista.get(1).getPorcentEnderecoDpto();
-                for (int i = 0; i <= porcetagem; i++) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        publishProgress(i);
                     }
+                } catch (IndexOutOfBoundsException e) {
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.clear().commit();
+                    e.printStackTrace();
 
-                    publishProgress(i);
+                    //Toast.makeText(getApplicationContext(), "message", e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 

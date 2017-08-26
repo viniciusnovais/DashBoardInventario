@@ -19,7 +19,7 @@ import br.com.pdasolucoes.dashboardinventario.Services.Service;
 
 public class AutorizaoActivity extends AppCompatActivity {
 
-    private Button btEntrar;
+    private Button btEntrar, btConfig;
     private EditText editAutorizacao;
     private String textAutorizacao;
     private AlertDialog dialog;
@@ -31,7 +31,15 @@ public class AutorizaoActivity extends AppCompatActivity {
 
         btEntrar = (Button) findViewById(R.id.btEntrar);
         editAutorizacao = (EditText) findViewById(R.id.editAuotorizacao);
+        btConfig = (Button) findViewById(R.id.btConfiguraoes);
         SharedPreferences preferences = getSharedPreferences("inventario", MODE_PRIVATE);
+        SharedPreferences preferences1Config = getSharedPreferences("CONFIG", MODE_PRIVATE);
+
+        if (preferences1Config.getString("servidor", "").equals("")
+                || preferences1Config.getString("diretorio", "").equals("")) {
+            Intent i = new Intent(AutorizaoActivity.this, ConfiguracoesActivity.class);
+            startActivity(i);
+        }
 
         if (preferences != null) {
             textAutorizacao = preferences.getString("autorizacao", "");
@@ -40,6 +48,14 @@ public class AutorizaoActivity extends AppCompatActivity {
                 task.execute();
             }
         }
+
+        btConfig.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AutorizaoActivity.this, ConfiguracoesActivity.class);
+                startActivity(i);
+            }
+        });
 
         btEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,13 +87,16 @@ public class AutorizaoActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            Service.ERROR = "";
             dialog.show();
             super.onPreExecute();
         }
 
         @Override
         protected Object doInBackground(Object[] params) {
-            idInventario = Service.GetInventario(textAutorizacao);
+            SharedPreferences preferences = getSharedPreferences("CONFIG", MODE_PRIVATE);
+            idInventario = Service.GetInventario(textAutorizacao, preferences);
+
 
             return params;
         }
@@ -85,22 +104,29 @@ public class AutorizaoActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Object o) {
-            if (idInventario <= 0) {
-                dialog.dismiss();
-                Toast.makeText(AutorizaoActivity.this, "Autorização inválida", Toast.LENGTH_SHORT).show();
+
+            if (Service.ERROR.equals("")) {
+                if (idInventario <= 0) {
+                    dialog.dismiss();
+                    Toast.makeText(AutorizaoActivity.this, "Autorização inválida", Toast.LENGTH_SHORT).show();
+                } else {
+                    dialog.dismiss();
+                    Intent i = new Intent(AutorizaoActivity.this, DashBoardActivity.class);
+
+
+                    SharedPreferences preferences = getSharedPreferences("inventario", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("autorizacao", textAutorizacao);
+                    editor.putInt("idInventario", idInventario);
+                    editor.commit();
+
+                    startActivity(i);
+                    finish();
+                }
             } else {
                 dialog.dismiss();
-                Intent i = new Intent(AutorizaoActivity.this, DashBoardActivity.class);
-
-
-                SharedPreferences preferences = getSharedPreferences("inventario", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("autorizacao", textAutorizacao);
-                editor.putInt("idInventario", idInventario);
-                editor.commit();
-
-                startActivity(i);
-                finish();
+                Toast.makeText(AutorizaoActivity.this, Service.ERROR, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AutorizaoActivity.this, "Verifique as configurações ou tente outra autorização", Toast.LENGTH_SHORT).show();
             }
 
             super.onPostExecute(o);
